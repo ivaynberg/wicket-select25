@@ -28,6 +28,8 @@
 			</p>
 		</div>
 
+		<form wicket:id="form">
+
 		<section>
 			<div class="page-header">
 				<h1>Multi-Select <small>Ajax result loading. Paging with infinite scrolling. Minimum input length.</small></h1>
@@ -36,17 +38,34 @@
 				<div class="span12">
 					<p>
 						Countries currently selected: <strong><span
-							wicket:id="countries"></span> </strong>
+							wicket:id="countriesLabel"></span> </strong>
 					</p>
-					<form wicket:id="multi">
-						<input wicket:id="countries" type="hidden" style="width: 300px;" multiple="multiple" />
-						<div class="form-actions">
-							<button type="submit" class="btn">Submit</button>
-						</div>
-					</form>
+
+						<input wicket:id="countries" type="hidden" data-s25-container-style="width: 450px;" />
 				</div>
 			</div>
 		</section>
+
+				<section>
+				<div class="page-header">
+					<h1>Single-Select <small>Ajax result loading. Paging with infinite scrolling. Minimum input length.</small></h1>
+				</div>
+				<div class="row">
+					<div class="span12">
+						<p>
+							Country currently selected: <strong><span wicket:id="countryLabel"></span> </strong>
+						</p>
+
+						<input wicket:id="country" type="hidden" data-s25-container-style="width: 450px;" />
+					</div>
+				</div>
+			</section>
+
+			<div class="form-actions">
+				<button type="submit" class="btn">Submit</button>
+			</div>
+
+		</form>
 
 	</div>
 </body>

@@ -15,16 +15,16 @@ package com.vaynberg.wicket.select25;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.util.string.StringValue;
 
 /**
  * Example page.
@@ -37,21 +37,56 @@ public class HomePage extends WebPage {
 
     private Country country = Country.US;
     private List<Country> countries = new ArrayList<Country>(Arrays.asList(new Country[]{Country.US, Country.CA}));
-    private List<TimeZone> timeZones = new ArrayList<TimeZone>();
 
     public HomePage() {
 
+        queue(new Form<Void>("form"));
         // multi-select example
 
-        add(new Label("countries", new PropertyModel<Object>(this, "countries")));
 
-        Form<?> multi = new Form<Void>("multi");
-        add(multi);
+        var countriesModel = new PropertyModel<Collection<Country>>(this, "countries");
 
-        Select25MultiChoice<Country> countries = new Select25MultiChoice<Country>("countries",
-                new PropertyModel<Collection<Country>>(this, "countries"), new CountriesProvider());
-        //countries.getSettings().setMinimumInputLength(1);
-        multi.add(countries);
+        Label countriesLabel = new Label("countriesLabel", countriesModel);
+        countriesLabel.setOutputMarkupId(true);
+        queue(countriesLabel);
+
+
+        var countries=new Select25MultiChoice<Country>("countries",
+            countriesModel, new CountriesProvider(), new Model("Selected Countries"), new Model("Add Country"));
+        queue(countries);
+
+        countries.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                target.add(countriesLabel);
+            }
+        });
+
+
+        // single-select example
+
+        var countryModel = new PropertyModel<Country>(this, "country");
+
+        Label countryLabel = new Label("countryLabel", countryModel);
+        countryLabel.setOutputMarkupId(true);
+        queue(countryLabel);
+
+        var country=new Select25SingleChoice<Country>("country", countryModel, new CountriesProvider(), new Model("Country")) {
+            @Override
+            protected SingleSettings newSettings() {
+                var settings= super.newSettings();
+                settings.setAllowClear(true);
+                return settings;
+            }
+        };
+        queue(country);
+
+        country.add(new AjaxFormComponentUpdatingBehavior("change") {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                target.add(countryLabel);
+            }
+        });
 
     }
 
@@ -68,6 +103,9 @@ public class HomePage extends WebPage {
 
         List<Country> result = new ArrayList<Country>();
 
+        if (term == null) {
+            term = "";
+        }
         term = term.toUpperCase();
 
         final int offset = page * pageSize;
@@ -107,16 +145,16 @@ public class HomePage extends WebPage {
         }
 
         @Override
-        public void query(String term, int page, Response<Country> response) {
-            response.addAll(queryMatches(term, page, 20));
+        public void query(String query, int page, Response<Country> response) {
+            response.addAll(queryMatches(query, page, 20));
             response.setHasMore(response.size() == 20);
         }
 
         @Override
-        public Collection<Country> toChoices(Collection<StringValue> ids) {
+        public Collection<Country> toChoices(String[] ids) {
             ArrayList<Country> countries = new ArrayList<Country>();
-            for (StringValue id : ids) {
-                countries.add(Country.valueOf(id.toString()));
+            for (String id : ids) {
+                countries.add(Country.valueOf(id));
             }
             return countries;
         }

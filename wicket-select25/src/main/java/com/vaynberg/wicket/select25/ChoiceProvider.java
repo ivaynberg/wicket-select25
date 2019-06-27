@@ -15,7 +15,6 @@ package com.vaynberg.wicket.select25;
 import java.util.Collection;
 
 import org.apache.wicket.model.IDetachable;
-import org.apache.wicket.util.string.StringValue;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
@@ -37,13 +36,13 @@ import org.json.JSONWriter;
 public abstract class ChoiceProvider<T> implements IDetachable {
 
     /**
-     * Queries application for choices that match the search {@code term} and adds them to the {@code response}
+     * Queries application for choices that match the search {@code query} and adds them to the {@code response}
      *
-     * @param term     search term
-     * @param page     requested search term results page
+     * @param query     search query
+     * @param page     requested search query results page
      * @param response aggregate for matching choices as well as other response options
      */
-    public abstract void query(String term, int page, Response<T> response);
+    public abstract void query(String query, int page, Response<T> response);
 
     /**
      * Converts the specified choice to Json.
@@ -78,7 +77,7 @@ public abstract class ChoiceProvider<T> implements IDetachable {
      * @param ids collection containing choice ids
      * @return collection containing application choice objects
      */
-    public abstract Collection<T> toChoices(Collection<StringValue> ids);
+    public abstract Collection<T> toChoices(String[] ids);
 
     @Override
     public void detach() {}

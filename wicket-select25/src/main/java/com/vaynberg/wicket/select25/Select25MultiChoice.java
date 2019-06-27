@@ -13,15 +13,15 @@
 package com.vaynberg.wicket.select25;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
+import java.util.Collections;
 
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.util.string.StringValue;
+import org.apache.wicket.util.string.Strings;
 import org.json.JSONException;
 
 import com.vaynberg.wicket.select25.json.JsonBuilder;
@@ -33,29 +33,37 @@ import com.vaynberg.wicket.select25.json.JsonBuilder;
  * 	type of choice object
  * @author igor
  */
-public class Select25MultiChoice<T> extends AbstractSelect2Choice<T, Collection<T>> {
+public class Select25MultiChoice<T> extends Select25AbstractChoice<MultiSettings, T, Collection<T>> {
 
+	private final IModel<String> valuesLabel;
+	private final IModel<String> comboboxLabel;
 
-	public Select25MultiChoice(String id, IModel<Collection<T>> model, ChoiceProvider<T> provider) {
+	public Select25MultiChoice(String id, IModel<Collection<T>> model, ChoiceProvider<T> provider,IModel<String> valuesLabel,IModel<String> comboboxLabel) {
 		super(id, model, provider);
+		this.valuesLabel=valuesLabel;
+		this.comboboxLabel=comboboxLabel;
 	}
-
 
 	@Override
 	public void convertInput() {
 
-		List<StringValue> input = getWebRequest().getRequestParameters().getParameterValues(getInputName());
-
-		final Collection<T> choices;
-
-		if (input == null || input.isEmpty()) {
-			choices = new ArrayList<T>();
-		} else {
-			choices = provider.toChoices(input);
-		}
-
+		String input = getWebRequest().getRequestParameters().getParameterValue(getInputName()).toString();
+		var choices=convertInput(input);
 		setConvertedInput(choices);
 	}
+
+
+	private Collection<T> convertInput(String input) {
+
+		if (Strings.isEmpty(input)) {
+			return Collections.emptyList();
+		} else {
+			var values = input.split(",");
+			var choices = provider.toChoices(values);
+			return choices;
+		}
+	}
+
 
 	@Override
 	public void updateModel() {
@@ -63,49 +71,44 @@ public class Select25MultiChoice<T> extends AbstractSelect2Choice<T, Collection<
 	}
 
 	@Override
-	protected void renderInitializationScript(IHeaderResponse response, Settings settings) {
+	protected void renderInitializationScript(IHeaderResponse response, MultiSettings settings) {
 
-		String values="[]";
-
-		Collection<? extends T> choices;
-		if (getWebRequest().getRequestParameters().getParameterNames().contains(getInputName())) {
-			convertInput();
-			choices = getConvertedInput();
+		final Collection<? extends T> choices;
+		if (hasRawInput()) {
+			choices=convertInput(getRawInput());
 		} else {
-			choices = getModelObject();
+			choices=getModelObject();
 		}
 
-		if (choices != null && !choices.isEmpty()) {
-
-			JsonBuilder selection = new JsonBuilder();
+		if (choices!=null && !choices.isEmpty()) {
+			JsonBuilder writer = new JsonBuilder();
 
 			try {
-				selection.array();
+				writer.array();
 				for (T choice : choices) {
-					selection.object();
-					provider.toJson(choice, selection);
-					selection.endObject();
+					writer.object();
+					provider.toJson(choice, writer);
+					writer.endObject();
 				}
-				selection.endArray();
+				writer.endArray();
+				settings.setValues(writer.toJson().toString());
 			} catch (JSONException e) {
 				throw new RuntimeException("Error converting model object to Json", e);
 			}
-
-			values=selection.toJson().toString();
+		} else {
+			settings.setValues("[]");
 		}
 
-
-		settings.setValues(values);
-
 		StringBuilder init = new StringBuilder();
-		init.append("var container = document.createElement('div');\n");
-		init.append("var opts=").append(settings.toJson()).append(";");
-		init.append("var target = $('#").append(getMarkupId()).append("');\n");
-		init.append("target.data('s25container', container);");
-		init.append("target.attr('disabled', 'disabled');\n");
-		init.append("target.after(container);\n");
-		init.append("ReactDOM.render(React.createElement(select25.MultiSelect, opts), container);\n");
-
+		init.append("window.select25.create(document.getElementById('" + getMarkupId() + "'), " + settings.toJson() + ");");
 		response.render(OnDomReadyHeaderItem.forScript(init));
+	}
+
+	@Override
+	protected MultiSettings newSettings() {
+		var settings= new MultiSettings();
+		settings.setValuesLabel(valuesLabel.getObject());
+		settings.setComboboxLabel(comboboxLabel.getObject());
+		return settings;
 	}
 }

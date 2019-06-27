@@ -24,64 +24,55 @@ import com.vaynberg.wicket.select25.json.Json;
  *
  * @author igor
  */
-public final class Settings implements Serializable {
+abstract class Settings implements Serializable {
 
 	private String name;
 
-	private String style;
+	private String containerStyle;
+	private String containerCss;
+
 	private String itemId = "id";
 	private String valueContent = "\"text\"";
-	private String valueLabel = "\"text\"";
+	private String itemLabel = "\"text\"";
 	private String resultContent = "\"text\"";
 
-	private String valuesLabel;
-	private String searchLabel;
-
-	private String values;
 
 	private int minimumCharacters;
 
-	private String query;
-
-	public CharSequence toJson() {
-		try {
-			JSONStringer writer = new JSONStringer();
-			writer.object();
-
-			Json.writeValue(writer, "name", name);
-			Json.writeValue(writer, "style", style);
-
-			Json.writeFunction(writer, "values", values);
+	private Ajax ajax;
 
 
-			Json.writeValue(writer, "itemId", itemId);
-			Json.writeFunction(writer, "valueContent", valueContent);
-			Json.writeValue(writer, "valueLabel", valueLabel);
-			Json.writeFunction(writer, "resultContent", resultContent);
+	public abstract String toJson();
 
-			Json.writeValue(writer, "minimumCharacters", minimumCharacters);
+	protected void toJson(JSONStringer writer) throws JSONException {
 
-			Json.writeFunction(writer, "query", query);
+		Json.writeValue(writer, "containerStyle", containerStyle);
+		Json.writeValue(writer, "containerCss", containerCss);
 
+		Json.writeValue(writer, "itemId", itemId);
+		Json.writeFunction(writer, "valueContent", valueContent);
+		Json.writeValue(writer, "itemLabel", itemLabel);
+		Json.writeFunction(writer, "resultContent", resultContent);
 
-			Json.writeValue(writer, "valuesLabel", valuesLabel);
-			Json.writeValue(writer, "searchLabel", searchLabel);
+		Json.writeValue(writer, "minimumCharacters", minimumCharacters);
 
-
-			writer.endObject();
-
-			return writer.toString();
-		} catch (JSONException e) {
-			throw new RuntimeException("Could not convert Select2 settings object to Json", e);
-		}
+		Json.writeFunction(writer, "ajax", ajax.toJson());
 	}
 
-	public String getStyle() {
-		return style;
+	public String getContainerStyle() {
+		return containerStyle;
 	}
 
-	public void setStyle(String style) {
-		this.style = style;
+	public void setContainerStyle(String containerStyle) {
+		this.containerStyle = containerStyle;
+	}
+
+	public String getContainerCss() {
+		return containerCss;
+	}
+
+	public void setContainerCss(String containerCss) {
+		this.containerCss = containerCss;
 	}
 
 	public String getItemId() {
@@ -100,12 +91,12 @@ public final class Settings implements Serializable {
 		this.valueContent = valueContent;
 	}
 
-	public String getValueLabel() {
-		return valueLabel;
+	public String getItemLabel() {
+		return itemLabel;
 	}
 
-	public void setValueLabel(String valueLabel) {
-		this.valueLabel = valueLabel;
+	public void setItemLabel(String itemLabel) {
+		this.itemLabel = itemLabel;
 	}
 
 	public String getResultContent() {
@@ -116,21 +107,7 @@ public final class Settings implements Serializable {
 		this.resultContent = resultContent;
 	}
 
-	public String getValuesLabel() {
-		return valuesLabel;
-	}
 
-	public void setValuesLabel(String valuesLabel) {
-		this.valuesLabel = valuesLabel;
-	}
-
-	public String getSearchLabel() {
-		return searchLabel;
-	}
-
-	public void setSearchLabel(String searchLabel) {
-		this.searchLabel = searchLabel;
-	}
 
 	public int getMinimumCharacters() {
 		return minimumCharacters;
@@ -140,21 +117,15 @@ public final class Settings implements Serializable {
 		this.minimumCharacters = minimumCharacters;
 	}
 
-	public String getQuery() {
-		return query;
+	public Ajax getAjax() {
+		return ajax;
 	}
 
-	public void setQuery(String query) {
-		this.query = query;
+	void setAjax(Ajax ajax) {
+		this.ajax = ajax;
 	}
 
-	public void setValues(String values) {
-		this.values = values;
-	}
 
-	public String getValues() {
-		return values;
-	}
 
 	public void setName(String name) {
 		this.name = name;
@@ -162,5 +133,54 @@ public final class Settings implements Serializable {
 
 	public String getName() {
 		return name;
+	}
+
+
+	public static class Ajax {
+		private String url;
+		private String params;
+		private String process;
+
+		public String getUrl() {
+			return url;
+		}
+
+		public void setUrl(String url) {
+			this.url = url;
+		}
+
+		public String getParams() {
+			return params;
+		}
+
+		public void setParams(String params) {
+			this.params = params;
+		}
+
+		public String getProcess() {
+			return process;
+		}
+
+		public void setProcess(String process) {
+			this.process = process;
+		}
+
+		public String toJson() {
+			try {
+				JSONStringer writer = new JSONStringer();
+				writer.object();
+
+				Json.writeValue(writer, "url", url);
+				Json.writeValue(writer, "params", params);
+				Json.writeValue(writer, "process", process);
+
+				writer.endObject();
+
+				return writer.toString();
+			} catch (JSONException e) {
+				throw new RuntimeException("Could not convert Ajax object to Json", e);
+			}
+		}
+
 	}
 }
