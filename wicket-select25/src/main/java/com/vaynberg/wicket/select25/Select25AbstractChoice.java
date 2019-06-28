@@ -15,7 +15,7 @@ package com.vaynberg.wicket.select25;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 
-import org.apache.wicket.IResourceListener;
+import org.apache.wicket.IRequestListener;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.ComponentTag;
@@ -44,7 +44,7 @@ import org.json.JSONWriter;
  * 	type of model object
  * @author igor
  */
-abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComponent<M> implements IResourceListener {
+abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComponent<M> implements IRequestListener {
 
 	private static final ResourceReference JS = new JavaScriptResourceReference(Select25AbstractChoice.class, "res/select25.js");
 	private static final ResourceReference CSS = new CssResourceReference(Select25AbstractChoice.class, "res/select25.css");
@@ -78,7 +78,7 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 
 		S settings = newSettings();
 
-		String url = urlFor(IResourceListener.INTERFACE, null).toString();
+		String url = urlForListener( null).toString();
 
 		Settings.Ajax ajax = new Settings.Ajax();
 		ajax.setUrl(url);
@@ -125,9 +125,13 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 		return script;
 	}
 
+	@Override
+	public boolean rendersPage() {
+		return false;
+	}
 
 	@Override
-	public void onResourceRequested() {
+	public void onRequest() {
 
 		// this is the callback that retrieves matching choices used to populate the dropdown
 
@@ -171,7 +175,7 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 	protected void onRemove() {
 		super.onRemove();
 
-		AjaxRequestTarget target = getRequestCycle().find(AjaxRequestTarget.class);
+		AjaxRequestTarget target = getRequestCycle().find(AjaxRequestTarget.class).orElse(null);
 
 		if (target != null) {
 			// ensure the select2 is closed so we do not leave an orphaned dropdown component in the dom
