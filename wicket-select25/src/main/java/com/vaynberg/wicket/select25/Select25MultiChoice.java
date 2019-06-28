@@ -100,7 +100,7 @@ public class Select25MultiChoice<T> extends Select25AbstractChoice<MultiSettings
 		}
 
 		StringBuilder init = new StringBuilder();
-		init.append("window.select25.create(document.getElementById('" + getMarkupId() + "'), " + settings.toJson() + ");");
+		init.append("window.select25.createMultiSelect(document.getElementById('" + getMarkupId() + "'), " + settings.toJson() + ");");
 		response.render(OnDomReadyHeaderItem.forScript(init));
 	}
 

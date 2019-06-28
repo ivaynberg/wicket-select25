@@ -80,7 +80,7 @@ public class Select25SingleChoice<T> extends Select25AbstractChoice<SingleSettin
 		}
 
 		StringBuilder init = new StringBuilder();
-		init.append("window.select25.create(document.getElementById('" + getMarkupId() + "'), " + settings.toJson() + ");");
+		init.append("window.select25.createSingleSelect(document.getElementById('" + getMarkupId() + "'), " + settings.toJson() + ");");
 		response.render(OnDomReadyHeaderItem.forScript(init));
 	}
 
