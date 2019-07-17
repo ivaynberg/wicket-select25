@@ -14,6 +14,7 @@ package com.vaynberg.wicket.select25;
 
 import java.io.Serializable;
 
+import org.apache.wicket.util.string.Strings;
 import org.json.JSONException;
 import org.json.JSONStringer;
 
@@ -39,6 +40,8 @@ abstract class Settings implements Serializable {
 
 	private int minimumCharacters;
 
+	private String placeholder;
+
 	private Ajax ajax;
 
 
@@ -55,6 +58,10 @@ abstract class Settings implements Serializable {
 		Json.writeFunction(writer, "resultContent", resultContent);
 
 		Json.writeValue(writer, "minimumCharacters", minimumCharacters);
+
+		if (!Strings.isEmpty(placeholder)) {
+			Json.writeValue(writer, "placeholder", placeholder);
+		}
 
 		Json.writeFunction(writer, "ajax", ajax.toJson());
 	}
@@ -115,6 +122,14 @@ abstract class Settings implements Serializable {
 
 	public void setMinimumCharacters(int minimumCharacters) {
 		this.minimumCharacters = minimumCharacters;
+	}
+
+	public String getPlaceholder() {
+		return placeholder;
+	}
+
+	public void setPlaceholder(String placeholder) {
+		this.placeholder = placeholder;
 	}
 
 	public Ajax getAjax() {
