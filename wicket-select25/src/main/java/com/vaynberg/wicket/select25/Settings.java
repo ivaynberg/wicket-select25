@@ -31,6 +31,7 @@ abstract class Settings implements Serializable {
 
 	private String containerStyle;
 	private String containerCss;
+	private boolean openOnFocus;
 
 	private String itemId = "id";
 	private String valueContent = "\"text\"";
@@ -51,6 +52,7 @@ abstract class Settings implements Serializable {
 
 		Json.writeValue(writer, "containerStyle", containerStyle);
 		Json.writeValue(writer, "containerCss", containerCss);
+		Json.writeValue(writer, "openOnFocus", openOnFocus);
 
 		Json.writeValue(writer, "itemId", itemId);
 		Json.writeFunction(writer, "valueContent", valueContent);
@@ -64,6 +66,14 @@ abstract class Settings implements Serializable {
 		}
 
 		Json.writeFunction(writer, "ajax", ajax.toJson());
+	}
+
+	public void setOpenOnFocus(boolean openOnFocus) {
+		this.openOnFocus = openOnFocus;
+	}
+
+	public boolean isOpenOnFocus() {
+		return openOnFocus;
 	}
 
 	public String getContainerStyle() {
