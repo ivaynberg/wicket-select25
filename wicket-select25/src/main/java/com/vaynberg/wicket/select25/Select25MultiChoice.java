@@ -12,7 +12,6 @@
  */
 package com.vaynberg.wicket.select25;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -20,7 +19,6 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.util.string.StringValue;
 import org.apache.wicket.util.string.Strings;
 import org.json.JSONException;
 
@@ -40,8 +38,8 @@ public class Select25MultiChoice<T> extends Select25AbstractChoice<MultiSettings
 
 	public Select25MultiChoice(String id, IModel<Collection<T>> model, ChoiceProvider<T> provider,IModel<String> valuesLabel,IModel<String> comboboxLabel) {
 		super(id, model, provider);
-		this.valuesLabel=valuesLabel;
-		this.comboboxLabel=comboboxLabel;
+		this.valuesLabel=wrap(valuesLabel);
+		this.comboboxLabel=wrap(comboboxLabel);
 	}
 
 	@Override
