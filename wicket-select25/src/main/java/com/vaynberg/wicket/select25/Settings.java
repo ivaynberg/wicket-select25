@@ -38,10 +38,11 @@ abstract class Settings implements Serializable {
 	private String itemLabel = "\"text\"";
 	private String resultContent = "\"text\"";
 
-
 	private int minimumCharacters;
 
 	private String placeholder;
+
+	private Dictionary dictionary;
 
 	private Ajax ajax;
 
@@ -63,6 +64,10 @@ abstract class Settings implements Serializable {
 
 		if (!Strings.isEmpty(placeholder)) {
 			Json.writeValue(writer, "placeholder", placeholder);
+		}
+
+		if (dictionary != null) {
+			dictionary.writeToJson(writer);
 		}
 
 		Json.writeFunction(writer, "ajax", ajax.toJson());
@@ -142,6 +147,14 @@ abstract class Settings implements Serializable {
 		this.placeholder = placeholder;
 	}
 
+	public Dictionary getDictionary() {
+		return dictionary;
+	}
+
+	public void setDictionary(Dictionary dictionary) {
+		this.dictionary = dictionary;
+	}
+
 	public Ajax getAjax() {
 		return ajax;
 	}
@@ -161,7 +174,7 @@ abstract class Settings implements Serializable {
 	}
 
 
-	public static class Ajax {
+	public static class Ajax implements Serializable {
 		private String url;
 		private String params;
 		private String process;
