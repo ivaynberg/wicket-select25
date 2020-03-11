@@ -88,6 +88,7 @@ public class Select25SingleChoice<T> extends Select25AbstractChoice<SingleSettin
 	protected SingleSettings newSettings() {
 		var settings= new SingleSettings();
 		settings.setLabel(label.getObject());
+		addDictionaryToSettings(settings);
 		return settings;
 	}
 }

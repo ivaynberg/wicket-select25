@@ -24,6 +24,7 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.form.FormComponent;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.IRequestParameters;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.http.WebResponse;
@@ -33,6 +34,9 @@ import org.apache.wicket.request.resource.ResourceReference;
 import org.apache.wicket.util.lang.Args;
 import org.json.JSONException;
 import org.json.JSONWriter;
+
+import com.github.openjson.JSONObject;
+import com.vaynberg.wicket.select25.Dictionary.DictionaryImplementation;
 
 /**
  * Base class for Select2 components
@@ -202,5 +206,67 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 			provider.toJson(item, json);
 			json.endObject();
 		}
+	}
+
+	protected void addDictionaryToSettings(final Settings settings) {
+		settings.setDictionary(createDictionary());
+	}
+
+	/**
+	 * Generates a Select25 Dictionary JavaScript object using localized strings found in a wicket .properties file,
+	 * using {@link StringResourceModel}s. The following properties are used:
+	 * 
+	 * <ul>
+	 * <li>select25.noSearchResults</li>
+	 * <li>select25.searchResultsLoading</li>
+	 * <li>select25.removeButtonTitle</li>
+	 * <li>select25.clearButtonTitle</li>
+	 * <li>select25.valueAdded</li>
+	 * <li>select25.minimumCharactersMessage1</li>
+	 * <li>select25.minimumCharactersMessageX</li>
+	 * <li>select25.multiSelectInstructions</li>
+	 * <li>select25.expandButtonTitle</li>
+	 * </ul>
+	 * 
+	 * @author matthewgeer
+	 */
+	protected DictionaryImplementation createDictionary() {
+		// @formatter:off
+		return new DictionaryImplementation(
+			"{" +
+				"valueAdded: function(itemLabel) {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.valueAdded", this)
+							.setParameters("$value$").getObject()) + ".replace('$value$', itemLabel);" +
+				"}, " +
+				"noSearchResults: function() {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.noSearchResults", this).getObject()) + ";" +
+				"}, " +
+				"searchResultsLoading: function() {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.searchResultsLoading", this).getObject()) + ";" +
+				"}, " +
+				"removeButtonTitle: function() {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.removeButtonTitle", this).getObject()) + ";" +
+				"}, " +
+				"clearButtonTitle: function() {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.clearButtonTitle", this).getObject()) + ";" +
+				"}, " +
+				"minimumCharactersMessage: function(len, min) {" +
+					"var delta = min - len;" +
+					"if(delta == 1) { " +
+						"return " + JSONObject.quote(new StringResourceModel("select25.minimumCharactersMessage1", this).getObject()) + ";" +
+					"} else {" +
+						"return " + JSONObject.quote(new StringResourceModel("select25.minimumCharactersMessageX", this)
+								.setParameters("$delta$").getObject()) + ".replace('$delta$', delta);" +
+					"}" +
+				"}, " +
+				"multiSelectInstructions: function() {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.multiSelectInstructions", this).getObject()) + ";" +
+				"}, " +
+				"expandButtonTitle: function () {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.expandButtonTitle", this).getObject()) + ";" +
+				"} " +
+			"}"
+		);
+		// @formatter:on
 	}
 }

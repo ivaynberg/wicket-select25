@@ -107,6 +107,7 @@ public class Select25MultiChoice<T> extends Select25AbstractChoice<MultiSettings
 		var settings= new MultiSettings();
 		settings.setValuesLabel(valuesLabel.getObject());
 		settings.setComboboxLabel(comboboxLabel.getObject());
+		addDictionaryToSettings(settings);
 		return settings;
 	}
 }
