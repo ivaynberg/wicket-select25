@@ -57,7 +57,7 @@ abstract class Settings implements Serializable {
 
 		Json.writeValue(writer, "itemId", itemId);
 		Json.writeFunction(writer, "valueContent", valueContent);
-		Json.writeValue(writer, "itemLabel", itemLabel);
+		Json.writeFunction(writer, "itemLabel", itemLabel);
 		Json.writeFunction(writer, "resultContent", resultContent);
 
 		Json.writeValue(writer, "minimumCharacters", minimumCharacters);
