@@ -30,7 +30,7 @@ abstract class Settings implements Serializable {
 	private String name;
 
 	private String containerStyle;
-	private String containerCss;
+	private String cssClass;
 	private boolean openOnFocus;
 
 	private String itemId = "id";
@@ -52,7 +52,7 @@ abstract class Settings implements Serializable {
 	protected void toJson(JSONStringer writer) throws JSONException {
 
 		Json.writeValue(writer, "containerStyle", containerStyle);
-		Json.writeValue(writer, "containerCss", containerCss);
+		Json.writeValue(writer, "cssClass", cssClass);
 		Json.writeValue(writer, "openOnFocus", openOnFocus);
 
 		Json.writeValue(writer, "itemId", itemId);
@@ -89,12 +89,12 @@ abstract class Settings implements Serializable {
 		this.containerStyle = containerStyle;
 	}
 
-	public String getContainerCss() {
-		return containerCss;
+	public String getCssClass() {
+		return cssClass;
 	}
 
-	public void setContainerCss(String containerCss) {
-		this.containerCss = containerCss;
+	public void setCssClass(String cssClass) {
+		this.cssClass = cssClass;
 	}
 
 	public String getItemId() {
