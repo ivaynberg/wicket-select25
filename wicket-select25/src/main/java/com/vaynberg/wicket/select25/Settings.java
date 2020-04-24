@@ -97,6 +97,22 @@ abstract class Settings implements Serializable {
 		this.cssClass = cssClass;
 	}
 
+	/**
+	 * @deprecated Use {@link #getCssClass()} instead.
+	 */
+	@Deprecated
+	public String getContainerCss() {
+		return getCssClass();
+	}
+
+	/**
+	 * @deprecated Use {@link #setCssClass(String)} instead.
+	 */
+	@Deprecated
+	public void setContainerCss(String cssClass) {
+		setCssClass(cssClass);
+	}
+
 	public String getItemId() {
 		return itemId;
 	}
