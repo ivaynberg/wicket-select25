@@ -4,11 +4,11 @@
     <parent>
         <artifactId>wicket-select25-parent</artifactId>
         <groupId>com.vaynberg.wicket.select25</groupId>
-        <version>1.7</version>
+        <version>1.8-SNAPSHOT</version>
     </parent>
     <groupId>com.vaynberg.wicket.select25</groupId>
     <artifactId>wicket-select25-examples</artifactId>
-    <version>1.7</version>
+    <version>1.8-SNAPSHOT</version>
     <packaging>war</packaging>
     <name>Wicket-Select25 Examples</name>
     <url>https://github.com/ivaynberg/wicket-select25</url>
