@@ -81,12 +81,7 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 		response.render(CssHeaderItem.forReference(CSS));
 
 		S settings = newSettings();
-
-		String url = urlForListener( null).toString();
-
-		Settings.Ajax ajax = new Settings.Ajax();
-		ajax.setUrl(url);
-		settings.setAjax(ajax);
+		settings.setAjax(newAjax());
 
 		renderInitializationScript(response, settings);
 	}
@@ -104,6 +99,15 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 
 
 	protected abstract S newSettings();
+
+	protected Settings.Ajax newAjax() {
+		String url = urlForListener(null).toString();
+
+		Settings.Ajax ajax = new Settings.Ajax();
+		ajax.setUrl(url);
+
+		return ajax;
+	}
 
 	@Override
 	public void onEvent(IEvent<?> event) {

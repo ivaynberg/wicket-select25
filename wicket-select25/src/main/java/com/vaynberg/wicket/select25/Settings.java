@@ -194,6 +194,7 @@ abstract class Settings implements Serializable {
 		private String url;
 		private String params;
 		private String process;
+		private String onError;
 
 		public String getUrl() {
 			return url;
@@ -219,6 +220,23 @@ abstract class Settings implements Serializable {
 			this.process = process;
 		}
 
+		public String getOnError() {
+			return onError;
+		}
+
+		/**
+		 * Sets a JavaScript callback for when an error occurs when retrieving new choices.
+		 *
+		 * This callback will be called when there if the server can not be reached, or if the server responds with an
+		 * HTTP status other than 200 OK. This method has the signature {@code (data?: string, status?:number) => void},
+		 * where the response text and HTTP status code are provided if available.
+		 *
+		 * @param onError
+		 */
+		public void setOnError(String onError) {
+			this.onError = onError;
+		}
+
 		public String toJson() {
 			try {
 				JSONStringer writer = new JSONStringer();
@@ -227,6 +245,10 @@ abstract class Settings implements Serializable {
 				Json.writeValue(writer, "url", url);
 				Json.writeValue(writer, "params", params);
 				Json.writeValue(writer, "process", process);
+
+				if (!Strings.isEmpty(onError)) {
+					Json.writeFunction(writer, "onerror", onError);
+				}
 
 				writer.endObject();
 
