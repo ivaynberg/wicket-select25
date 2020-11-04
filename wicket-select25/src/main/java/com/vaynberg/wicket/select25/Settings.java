@@ -40,6 +40,9 @@ abstract class Settings implements Serializable {
 
 	private int minimumCharacters;
 
+	/** max number of values that can be selected */
+	private Integer maxValues;
+
 	private String placeholder;
 
 	private Dictionary dictionary;
@@ -61,6 +64,7 @@ abstract class Settings implements Serializable {
 		Json.writeFunction(writer, "resultContent", resultContent);
 
 		Json.writeValue(writer, "minimumCharacters", minimumCharacters);
+		Json.writeValue(writer, "maxValues", maxValues);
 
 		if (!Strings.isEmpty(placeholder)) {
 			Json.writeValue(writer, "placeholder", placeholder);
@@ -153,6 +157,14 @@ abstract class Settings implements Serializable {
 
 	public void setMinimumCharacters(int minimumCharacters) {
 		this.minimumCharacters = minimumCharacters;
+	}
+
+	public Integer getMaxValues() {
+		return maxValues;
+	}
+
+	public void setMaxValues(Integer maxValues) {
+		this.maxValues = maxValues;
 	}
 
 	public String getPlaceholder() {

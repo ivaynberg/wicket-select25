@@ -268,6 +268,9 @@ abstract class Select25AbstractChoice<S extends Settings, T, M> extends FormComp
 				"}, " +
 				"expandButtonTitle: function () {" +
 					"return " + JSONObject.quote(new StringResourceModel("select25.expandButtonTitle", this).getObject()) + ";" +
+				"}, " +
+				"maximumValuesSelectedMessage: function () {" +
+					"return " + JSONObject.quote(new StringResourceModel("select25.maximumValuesSelectedMessage", this).getObject())+";" +
 				"} " +
 			"}"
 		);

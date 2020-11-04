@@ -52,7 +52,15 @@ public class HomePage extends WebPage {
 
 
         var countries=new Select25MultiChoice<Country>("countries",
-            countriesModel, new CountriesProvider(), new Model("Selected Countries"), new Model("Add Country"));
+            countriesModel, new CountriesProvider(), new Model("Selected Countries"), new Model("Add Country")) {
+            @Override
+            protected MultiSettings newSettings() {
+                var settings= super.newSettings();
+                settings.setMaxValues(3);
+                settings.setMinimumCharacters(2);
+                return settings;
+            }
+        };
         queue(countries);
 
         countries.add(new AjaxFormComponentUpdatingBehavior("change") {
